@@ -28,6 +28,7 @@ int main(){
             }
             if(answer) cout << "YES\n";
             else cout << "NO\n";
+            
         }
     }
 }
