@@ -17,14 +17,17 @@ int main(){
             graph[b-1].push_back(a-1);
         }
         queue <int> leafs;
-        int counts[n];
+        long long counts[n];
         for(int i = 0; i < n; i++) counts[i] = 0;
-        for(int i = 0; i < n; i++) 
+        int sizeOfLoop = n;
+        for(int i = 0; i < n; i++) {
             if(graph[i].size() == 1) 
             {
                 leafs.push(i);
-                counts[i] = 1;
+                sizeOfLoop--;
             }
+            counts[i] = 1;
+        }
         while (!leafs.empty()){
             int currentLeaf = leafs.front();
             leafs.pop();
@@ -34,17 +37,18 @@ int main(){
                     graph[newLeaf].erase(graph[newLeaf].begin()+i); 
                     break;
                 }
-            counts[newLeaf] = counts[currentLeaf] + 1;
-            counts[currentLeaf] = 0;
-            if(graph[newLeaf].size() == 1) leafs.push(newLeaf);
+            counts[newLeaf] += counts[currentLeaf];
+            counts[currentLeaf] = -1;
+            if(graph[newLeaf].size() == 1) {
+                leafs.push(newLeaf);
+                --sizeOfLoop;
+            }
         }
         long long answer = 0;
-        int sizeOfLoop = 0;
         for(int i = 0; i < n; i++){
-            if(counts[i] > 0) answer += counts[i]*(counts[i]-1)/2 + (counts[i]-1)*(n-counts[i]-1);
-            else sizeOfLoop++;
+            if(counts[i] > 0) answer += counts[i]*(counts[i]-1)/2 + counts[i]*(n-counts[i]);
         }
-        answer += sizeOfLoop*(n - 1);
+        // answer += sizeOfLoop*(sizeOfLoop - 1);
         cout << answer << '\n';
     }   
 }
