@@ -51,4 +51,4 @@ int main(){
         // answer += sizeOfLoop*(sizeOfLoop - 1);
         cout << answer << '\n';
     }   
-}
+
