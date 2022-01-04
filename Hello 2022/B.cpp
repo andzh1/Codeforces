@@ -21,8 +21,6 @@ struct Segment
     }
 };
 
-
-
 int main() {
     int T;
     cin >> T;
@@ -37,10 +35,7 @@ int main() {
         Segment maxRight = input[0];
         Segment maxLen = input[0];
         cout << input[0].cost << '\n';
-        // pair<Segment, Segment> answer[n];
-        // answer[0] = {input[0], input[0]};
         for (int s = 1; s < n; ++s) {
-            // answer[s] = answer[s - 1];
             if (input[s].left < minLeft.left) minLeft = input[s];
             if (input[s].left == minLeft.left && input[s].cost < minLeft.cost) minLeft = input[s];
             if (input[s].right > maxRight.right) maxRight = input[s];
@@ -58,16 +53,6 @@ int main() {
                 cout << minLeft.cost + maxRight.cost << '\n';
             }
         }
-        // for (int s = 0; s < n; ++s) {
-        //     int toPrint = answer[s].first.cost + answer[s].second.cost;
-        //     if (answer[s].first == answer[s].second) toPrint = min(answer[s].first.cost, answer[s].second.cost);
-        //     cout << toPrint << '\n';
-        // }
     }
 }
 
-
-
-/*
-
-*/
