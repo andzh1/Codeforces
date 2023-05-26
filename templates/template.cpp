@@ -8,6 +8,9 @@ using namespace std;
 #define iloop(n) loop(i, n)
 #define jloop(n) loop(j, n)
 #define kloop(n) loop(j, n)
+#define all(v) (v.begin(), v.end())
+#define rall(v) (v.end(), v.begin())
+#define foreach(v) for (const auto& x : v)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
@@ -20,42 +23,6 @@ int modpow(const int& x, const int& power, const int& mod) {
     sqrt %= mod;
     return sqrt;
 }
-
-struct SparceTable {
-    vector<vector<int>> data_;
-
-    SparceTable(const vector<int>& v) {
-        int n = v.size();
-        int logn = log2(n) + 1;
-        data_ = vector<vector<int>>(logn + 1, vector<int>(n));
-        data_[0] = v;
-        for (int i = 1; i <= logn; ++i) {
-            int pow = (1 << (i - 1));
-            for (int j = 0; j + pow < n; ++j) {
-                data_[i][j] = std::min(data_[i - 1][j], data_[i - 1][j + pow]);
-            }
-        }
-    }
-
-    // [left, right]
-    int GetMinOnSegment(int left, int right) const {
-        int len = right - left + 1;
-        if (len == 1) return data_[0][left];
-        int pow = 0;
-        while ((1 << (pow + 1)) < len) ++pow;
-        int ans1 = data_[pow][left];
-        int ans2 = data_[pow][right - (1 << pow) + 1];
-        return std::min(ans1, ans2);
-    }
-
-    // True, if on (left, right) interval there are no value greater then on left and right position
-    bool NoMaxOnInterval(int left, int right) const {
-        if (right - left == 1) {
-            return true;
-        }
-        return GetMinOnSegment(left + 1, right - 1) <= data_[0][left]; // Assume that v[left] == v[right]
-    }
-};
 
 
 template<typename T = int>
@@ -72,9 +39,16 @@ vector<vector<T>> read(int n, int m) {
     return v;
 }
 
+
+template<typename T>
+void print(const T& v) {
+    cout << v << ' ';
+    cout << '\n';
+}
+
 template<typename T = int>
 void print(const vector<T>& v) {
-    for (const auto& x : v) cout << x << ' ';
+    for (const auto& x : v) print(x);
     cout << '\n';
 }
 
@@ -84,22 +58,47 @@ void print(const vector<vector<T>>& v) {
 }
 
 
+template <typename T>
+void sort_v(vector<T>& v) {
+  sort(all(v));
+}
+
+template <typename T>
+void rsort_v(vector<T>& v) {
+  sort(rall(v));
+}
+
+template <typename AxisType = int>
+struct Point {
+  AxisType x = 0;
+  AxisType y = 0;
+  int index = 0;
+  bool first_compare_by_x_ = true;
+
+  explicit Point(AxisType x, AxisType y) : x(x), y(y) {}
+  explicit Point(AxisType x, AxisType y, bool cmp)
+      : x(x), y(y), first_compare_by_x_(cmp) {}
+  explicit Point(AxisType x, AxisType y, int index)
+      : x(x), y(y), index(index) {}
+  explicit Point(AxisType x, AxisType y, int index, bool cmp)
+      : x(x), y(y), index(index), first_compare_by_x_(cmp) {}
+
+  bool operator<(const Point& other) const {
+    if (first_compare_by_x_) {
+      return (x < other.x) || (x == other.x && y < other.y) ||
+             (x == other.x && y == other.y && index < other.index);
+    } else {
+      return (y < other.y) || (y == other.y && x < other.x) ||
+             (x == other.x && y == other.y && index < other.index);
+    }
+  }
+};
+
+
 void solve_test_case() {
     get(n)
-    auto v = read(n);
-    sort(v.begin(), v.end());
-    if (v[0] == v.back()) {
-        cout << "NO\n";
-        return;
-    }
-    cout << "YES\n";
-    for (int i = 0; i < n/2; ++i) {
-        cout << v[n - 1 - i] << ' ' << v[i] << ' ';
-    }
-    if (n % 2) {
-        cout << v[n/2];
-    }
-    cout << '\n';
+    auto v = read<string>(n, 1);
+    print<string>(v);
 }
 
 
@@ -108,6 +107,6 @@ signed main() {
     // freopen("tests.txt", "r", stdin);
     // freopen("output.txt", "w", stdout);
     int tests = 1;
-    cin >> tests;
+    // cin >> tests;
     while(tests --> 0) solve_test_case();
 }
