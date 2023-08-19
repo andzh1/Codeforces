@@ -3,7 +3,6 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
@@ -12,7 +11,7 @@ using namespace std;
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
 #define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
+#define foreach(v) for (const auto& x : v)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -128,8 +127,38 @@ using two_int_t = MyPoint<int, int>;
 
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    int m = n * (n-1) / 2;
+
+    auto b = read(m);
+    sort(all(b));
+    vector<int> a;
+
+    repeat(m) {
+        int cnt = 1;
+        int ip = i + 1;
+        while (ip < m && b[ip] == b[i]) ++ip;
+        cnt = ip - i;
+        cnt *= 2;
+        int k = n - a.size();
+        int alpha = 2 * k - 1;
+        int D = sqrt(alpha * alpha - 4 * cnt);
+        int x1 = (alpha - D) / 2;
+        int x2 = (alpha + D) / 2;
+        for (int j = 0; j < x1; ++j) {
+            a.push_back(b[i]);
+        }
+
+        i = ip - 1;
+
+    }
+
+    while (a.size() < n) {
+        // cout << "*";
+        a.push_back(b[m - 1]);
+    }
+
+    print(a);
+
 }
 
 

@@ -11,7 +11,7 @@ using namespace std;
 #define jloop(n) loop(j, n)
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
-#define rall(v) v.end(), v.begin()
+#define rall(v) v.rbegin(), v.rend()
 #define foreach(val, container) for (const auto& val : container)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
@@ -128,8 +128,31 @@ using two_int_t = MyPoint<int, int>;
 
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    if (n == 2) {
+        cout << "2\n";
+        return;
+    }
+    if (n == 3) {
+        cout << "7\n";
+        return;
+    }
+    int ans = 0;
+    for (int k = 1; k <= n; ++k) {
+        int m = -1;
+        int curMax = 0;
+        for (int i = 1; i <= k; ++i) {
+            curMax += i * i;
+            m = max(m, i * i);
+        }
+        for (int i = k + 1; i <= n; ++i) {
+            int x = (n - (i - k - 1));
+            curMax += i * x;
+            m = max(m, i * x);
+        }
+        ans = max(ans, curMax - m);
+    }
+    cout << ans << '\n';
+
 }
 
 

@@ -3,7 +3,6 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
@@ -12,7 +11,7 @@ using namespace std;
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
 #define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
+#define foreach(v) for (const auto& x : v)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -126,10 +125,76 @@ struct MyPoint: public CustomComparablePair<first_t, second_t> {
 
 using two_int_t = MyPoint<int, int>;
 
+struct Cooldown {
+    bool is_start;
+    int position;
+    int time;
+
+    bool operator<(const Cooldown& other) {
+        if (time != other.time) return time < other.time;
+        if (position != other.position) return position < other.position;
+        if (is_start != other.is_start) return is_start < other.is_start;
+        return false;
+    }
+};
+
+int revert(int x) {
+    if (x == 1) return 2;
+    return 1;
+}
+
 void solve_test_case() {
-    get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    vector<string> s(3);
+    cin >> s[1] >> s[2];
+    get(t)
+    get(q)
+    int n = s[1].length();
+    int unequal_positions = 0;
+    repeat(n) {
+        if (s[1][i] != s[2][i]) {
+            unequal_positions++;
+        }
+    }
+
+    vector<vector<int>> unblocking(q + 1 + t);
+
+    for (int time = 1; time <= q; ++time) {
+        get(type)
+        for (int i = 0; i < unblocking[time].size(); ++i) {
+            if (s[1][i] != s[2][i]) {
+                unequal_positions++;
+            }
+        }
+        if (type == 1) {
+            get(pos)
+            if (s[1][pos - 1] != s[2][pos - 1]) {
+                unequal_positions--;
+            }
+            unblocking[time + t].push_back(pos - 1);
+            continue;
+        }
+        if (type == 2) {
+            get(str1)
+            get(pos1)
+            get(str2)
+            get(pos2)
+            if (s[str1][pos1 - 1] != s[revert(str1)][pos1 - 1] && s[str1][pos1 - 1] == s[str2][pos2 - 1]) unequal_positions--;
+            if (s[str1][pos1 - 1] == s[revert(str1)][pos1 - 1] && s[str1][pos1 - 1] != s[str2][pos2 - 1]) unequal_positions++;
+            if (s[str2][pos2 - 1] != s[revert(str2)][pos2 - 1] && s[str1][pos1 - 1] == s[str2][pos2 - 1]) unequal_positions--;
+            if (s[str2][pos2 - 1] == s[revert(str2)][pos2 - 1] && s[str1][pos1 - 1] != s[str2][pos2 - 1]) unequal_positions++;
+            swap(s[str1][pos1 - 1], s[str2][pos2 - 1]);
+            continue;
+        }
+        if (type == 3) {
+            if (unequal_positions == 0) {
+                cout << "Yes\n";
+            } else {
+                cout << "No\n";
+            }
+        }
+    }
+
+
 }
 
 
@@ -141,4 +206,3 @@ signed main() {
     cin >> tests;
     while(tests --> 0) solve_test_case();
 }
-

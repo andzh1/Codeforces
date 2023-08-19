@@ -3,7 +3,6 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
@@ -11,8 +10,8 @@ using namespace std;
 #define jloop(n) loop(j, n)
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
-#define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
+#define rall(v) (v.end(), v.begin())
+#define foreach(v) for (const auto& x : v)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -126,10 +125,84 @@ struct MyPoint: public CustomComparablePair<first_t, second_t> {
 
 using two_int_t = MyPoint<int, int>;
 
+int count_perms(const vector<int>& p) {
+    int n = p.size();
+    int pos1 = -1, pos2 = -1;
+    repeat(n) {
+        if (p[i] == 1) {
+            pos1 = i;
+        }
+        if (p[i] == 2) {
+            pos2 = i;
+        }
+    }
+    int ans = 0;
+    int left = min(pos1, pos2);
+    int right = max(pos1, pos2);
+
+    int max_on_seg = -1;
+    for (int i = left; i <= right; ++i) {
+        max_on_seg = max(max_on_seg, p[i]);
+    }
+    if (max_on_seg == right - left + 1) ++ans;
+    for (int i = left - 1; i >= 0; --i) {
+        max_on_seg = max(max_on_seg, p[i]);
+        if (max_on_seg == right - i + 1) ++ans;
+    }
+    for (int i = right + 1; i < n; ++i) {
+        max_on_seg = max(max_on_seg, p[i]);
+        if (max_on_seg == i - left + 1) ++ans;
+    }
+    return ans;
+}
+
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    auto v = read(n);
+    int pos1 = -1, pos2 = -1;
+    repeat(n) {
+        if (v[i] == 1) {
+            pos1 = i;
+        }
+        if (v[i] == 2) {
+            pos2 = i;
+        }
+    }
+    if (pos1 == 0 || pos1 == n - 1) {
+        if (pos2 == 0 || pos2 == n - 1) {
+            cout << "1 1\n";
+            return; // OK
+        } else {
+            int x = (v[0] == 1)? n-1 : 0;
+            cout << pos2 + 1 << ' ' << x+1 << '\n';
+            return; // OK
+        }
+    } else {
+        swap(v[0], v[pos1]);
+        int x1 = count_perms(v);
+        swap(v[0], v[pos1]);
+        swap(v[n-1], v[pos1]);
+        int x2 = count_perms(v);
+        swap(v[n-1], v[pos1]);
+        int pos1_min = (x1 < x2)? 0 : n-1;
+
+
+        swap(v[0], v[pos2]);
+        int x3 = count_perms(v);
+        swap(v[0], v[pos2]);
+        swap(v[n-1], v[pos2]);
+        int x4 = count_perms(v);
+        swap(v[n-1], v[pos2]);
+        int pos2_min = (x3 < x4)? 0 : n-1;
+
+        if (min(x1, x2) < min(x3, x4)) {
+            cout << pos1 + 1 << ' ' << pos1_min+1 << '\n';
+        } else {
+            cout << pos2 + 1 << ' ' << pos2_min+1 << '\n';
+        }
+
+        return;
+    }
 }
 
 
@@ -141,4 +214,3 @@ signed main() {
     cin >> tests;
     while(tests --> 0) solve_test_case();
 }
-

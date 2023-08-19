@@ -11,7 +11,7 @@ using namespace std;
 #define jloop(n) loop(j, n)
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
-#define rall(v) v.end(), v.begin()
+#define rall(v) v.rbegin(), v.rend()
 #define foreach(val, container) for (const auto& val : container)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
@@ -125,11 +125,39 @@ struct MyPoint: public CustomComparablePair<first_t, second_t> {
 };
 
 using two_int_t = MyPoint<int, int>;
+const int ZERO = 0;
+
+int cost(int l, int r, vi & a, vi & b) {
+    return abs(a[l] - b[r]) + abs(a[r] - b[l]);
+}
 
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    get(k)
+    auto a = read(n);
+    auto b = read(n);
+
+    vector<vector<int>> dp (n, vi (k + 1));
+    dp[0][1] = cost(0, 0, a, b);
+    
+    for (int currentBoarder = 1; currentBoarder < n; ++currentBoarder) {
+        for (int len = 1; len <= k; ++len) {
+            if (len > currentBoarder + 1) break;
+            dp[currentBoarder][len] = dp[currentBoarder - 1][len];
+            if (len == currentBoarder + 1) dp[currentBoarder][len] = dp[currentBoarder - 1][len - 1];
+
+            for (int currentMid = max(currentBoarder - len, ZERO); currentMid <= currentBoarder; ++currentMid) {
+                if (len - currentBoarder + currentMid <= 0) continue;
+                dp[currentBoarder][len] = max(dp[currentBoarder][len], dp[currentMid][len - currentBoarder + currentMid - 1] + cost(currentMid, currentBoarder, a, b));
+            }
+        }
+    }
+    int ans = 0;
+    for (int len = 1; len <= k; ++len) {
+        ans = max(ans, dp[n - 1][len]);
+        if (dp[n - 1][len] == 0) break;
+    }
+    cout << ans << '\n';
 }
 
 

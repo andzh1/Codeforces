@@ -3,7 +3,6 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
@@ -12,7 +11,7 @@ using namespace std;
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
 #define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
+#define foreach(v) for (const auto& x : v)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -126,10 +125,52 @@ struct MyPoint: public CustomComparablePair<first_t, second_t> {
 
 using two_int_t = MyPoint<int, int>;
 
+map<int, map<int, int>> cashed_remainders_for_pairs;
+
+int calc_remainder(int a, int b) { 
+    if (a == b) return 3;
+    if (a < b) {
+        int ans = calc_remainder(b, b - a) % 3;
+        cashed_remainders_for_pairs[a][b] = ans + 1;
+        return ans + 1;
+    }
+
+    // a > b
+    if (b == 0) {
+        return 2;
+    }
+    if (a == 0) {
+        return 1;
+    }
+    int val = cashed_remainders_for_pairs[a][b];
+    if (val != 0) {
+        return val;
+    }
+    int div = (a - b) / b;
+    int real = div / 2;
+    int last = a - b * real * 2;
+    int next = 0;
+    if (a >= 2 * b) {
+        next = calc_remainder(a - b, b) % 3;
+    } else {
+        next = calc_remainder(b, last - b) % 3;
+    }
+    cashed_remainders_for_pairs[a][b] = 1 + next;
+    return 1 + next;
+}
+
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    auto a = read(n);
+    auto b = read(n);
+
+    set<int> gcd;
+    loop(i, n) {
+        if (a[i] + b[i] == 0) continue;
+        gcd.insert(calc_remainder(a[i], b[i]));
+    }
+    (gcd.size() == 1)? cout << "Yes\n" : cout << "No\n";
+
 }
 
 

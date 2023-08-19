@@ -3,7 +3,6 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
@@ -12,7 +11,7 @@ using namespace std;
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
 #define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
+#define foreach(v) for (const auto& x : v)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -126,10 +125,52 @@ struct MyPoint: public CustomComparablePair<first_t, second_t> {
 
 using two_int_t = MyPoint<int, int>;
 
+uint64_t check(int start, int count, uint64_t s, uint64_t k) {
+    s += start * 5;
+    k -= start;
+    if (k < 0) return 0;
+    uint64_t ans = s * k;
+    for (int i = 1; i < count && k > 0; ++i) {
+        s += (s % 10);
+        k--;
+        ans = max(ans, s * k);
+    }
+    return ans;
+}
+
 void solve_test_case() {
-    get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    // get(s)
+    uint64_t s;
+    cin >> s;
+    uint64_t k;
+    cin >> k;
+    // get(k)
+    if (s % 10 == 0) {
+        cout << s * k << '\n';
+        return;
+    }
+    uint64_t ans = s * k;
+    if ((s % 10) % 2 == 1) {
+        int last = s % 10;
+        s += last;
+        --k;   
+    }
+
+    ans = max(ans, s * k);
+    if ((s % 10) == 0) {
+        cout << ans << '\n';
+        return;
+    }
+
+    if (5 * k < s) {
+        cout << ans << '\n';
+        return;
+    }
+    uint64_t x = (20 * k - 4 * s) / 160;
+
+    int len = 130;
+    uint64_t s = 0;
+    cout << max(ans, check(max(4 * x - 4 * len, (uint64_t)0), 8 * len + 4, s, k)) << '\n';
 }
 
 

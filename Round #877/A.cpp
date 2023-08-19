@@ -3,16 +3,15 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
 #define iloop(n) loop(i, n)
 #define jloop(n) loop(j, n)
 #define kloop(n) loop(j, n)
-#define all(v) v.begin(), v.end()
-#define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
+#define all(v) (v.begin(), v.end())
+#define rall(v) (v.end(), v.begin())
+#define foreach(v) for (const auto& x : v)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -128,8 +127,19 @@ using two_int_t = MyPoint<int, int>;
 
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    auto v = read(n);
+    foreach(v) {
+        if (x < 0) {
+            cout << x << '\n';
+            return;
+        }
+    }
+
+    int ans = -1;
+    foreach(v) {
+        ans = max(ans, x);
+    }
+    cout << ans << '\n';
 }
 
 
@@ -141,4 +151,3 @@ signed main() {
     cin >> tests;
     while(tests --> 0) solve_test_case();
 }
-

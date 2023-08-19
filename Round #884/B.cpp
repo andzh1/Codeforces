@@ -3,17 +3,16 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
 #define iloop(n) loop(i, n)
 #define jloop(n) loop(j, n)
 #define kloop(n) loop(j, n)
-#define all(v) v.begin(), v.end()
-#define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
-#define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
+#define all(v) (v.begin(), v.end())
+#define rall(v) (v.end(), v.begin())
+#define foreach(v) for (const auto& x : v)
+#define FastAndFurious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
     if (power == 0) return 1;
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -124,17 +123,45 @@ struct MyPoint: public CustomComparablePair<first_t, second_t> {
     }
 };
 
+struct SimplePair {
+    int x;
+    int y;
+
+    bool operator<(const SimplePair& other) const {
+        return x < other.x || (x == other.x && y < other.y);
+    }
+};
+
 using two_int_t = MyPoint<int, int>;
 
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    if (n < 3) {
+        repeat(n) {
+            cout << i + 1 << ' ';
+        }
+        cout << '\n';
+        return;
+    }
+    vector<int> ans (n, 1);
+    ans[0] = 2;
+    ans[n - 1] = 3;
+    ans[n/2] = 1;
+    int cnt = 4;
+    for (int i = 1; i < n - 1; ++i) {
+        if (i == n/2) continue;
+        ans[i] = cnt;
+        cnt++;
+    }
+    repeat(n) {
+        cout << ans[i] << ' ';
+    }
+    cout << '\n';
 }
 
 
 signed main() {
-    fast_and_furious
+    FastAndFurious
     // freopen("tests.txt", "r", stdin);
     // freopen("output.txt", "w", stdout);
     int tests = 1;

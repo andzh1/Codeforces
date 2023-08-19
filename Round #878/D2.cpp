@@ -3,7 +3,6 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
@@ -12,7 +11,7 @@ using namespace std;
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
 #define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
+#define foreach(v) for (const auto& x : v)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -126,10 +125,75 @@ struct MyPoint: public CustomComparablePair<first_t, second_t> {
 
 using two_int_t = MyPoint<int, int>;
 
+int time_of_segment(int l, int r) {
+    if ((r - l) % 2 == 0) {
+        return (r - l) / 2;
+    }
+    return (r - l) / 2 + 1;
+}
+
+int time_of_dist(int dist) {
+    return (dist + 1) / 2;
+}
+
+bool is_enough(int distance, vector<int>& v) {
+    int n = v.size();
+    int left_edge = -1, right_edge = -1;
+    for (int i = 0; i < n - 1; ++i) {
+        if (v[i] <= distance * 2 && v[i + 1] > distance * 2) {
+            left_edge = i + 1;
+            break;
+        }
+    }
+    int r = v.back() - distance * 2;
+    for (int i = n - 1; i > 0; --i) {
+        if (v[i] >= r && v[i - 1] < r) {
+            right_edge = i - 1;
+            break;
+        }
+    }
+    if (left_edge == -1) return true;
+    if (right_edge == -1) return true;
+    if (left_edge >= right_edge) return true;
+    int len = v[right_edge] - v[left_edge];
+    return (len <= distance * 2);
+}
+
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    auto v = read(n);
+    std::sort(all(v));
+    set<int> ll;
+    foreach(v) {
+        ll.insert(x);
+    }
+    v.clear();
+    foreach(ll) {
+        v.push_back(x);
+    }
+    n = v.size();
+    if (n <= 3) {
+        cout << "0\n";
+        return;
+    }
+    
+    for(int i = 1; i < n; ++i) {
+        v[i] -= v[0];
+    }
+    v[0] = 0;
+
+    int left = 0, right = v.back();
+
+    while(left < right - 1) {
+        int dist = (right + left) / 2;
+        if (is_enough(dist, v)) {
+            right = dist;
+        } else {
+            left = dist;
+        }
+    }
+    cout << right << '\n';
+
 }
 
 
@@ -141,4 +205,3 @@ signed main() {
     cin >> tests;
     while(tests --> 0) solve_test_case();
 }
-

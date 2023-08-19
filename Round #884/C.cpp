@@ -3,7 +3,6 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
@@ -11,9 +10,9 @@ using namespace std;
 #define jloop(n) loop(j, n)
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
-#define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
-#define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
+#define rall(v) (v.end(), v.begin())
+#define foreach(v) for (const auto& x : v)
+#define FastAndFurious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
     if (power == 0) return 1;
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -124,17 +123,76 @@ struct MyPoint: public CustomComparablePair<first_t, second_t> {
     }
 };
 
+struct SimplePair {
+    int x;
+    int y;
+
+    bool operator<(const SimplePair& other) const {
+        return x < other.x || (x == other.x && y < other.y);
+    }
+};
+
 using two_int_t = MyPoint<int, int>;
+
+int sign(int x) {
+    if (x == 0) return 0;
+    if (x > 0) return 1;
+    if (x < 0) return -1;
+    return 22;
+}
+
+int maxAnsOnVector(vector<int>& v) {
+    int n = v.size();
+    if (n == 0) {
+        return INT64_MIN;
+    }
+    if (n == 1) {
+        return v[0];
+    }
+    vector<int> prefixSums (n, v[0]);
+    int ans = *std::max_element(v.begin(), v.end()), local_min = min((int)0, prefixSums[0]);
+    for (int i = 1; i < n; ++i) {
+        prefixSums[i] = prefixSums[i-1] + v[i];
+        if (v[i] < 0) {
+            local_min = min(local_min, prefixSums[i]);
+            continue;
+        }
+        ans = max(ans, prefixSums[i] - local_min);
+    }
+    return ans;
+}
+
+int maxAnsOnVector2(vector<int>& v) {
+    if (v.size() == 0) {
+        return INT64_MIN;
+    }
+    int maxx = *max_element(all(v));
+    if (maxx <= 0) return maxx;
+    int ans = 0;
+    for (int x : v) {
+        ans += max((int)0, x);
+    }
+    return ans;
+}
+
 
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    auto v = read(n);
+    vector<int> odd, even;
+    for (int i = 0; i < n; ++i) {
+        if (i % 2 == 0) {
+            odd.push_back(v[i]);
+        } else {
+            even.push_back(v[i]);
+        }
+    }
+    cout << max(maxAnsOnVector2(odd), maxAnsOnVector2(even)) << endl;
 }
 
 
 signed main() {
-    fast_and_furious
+    FastAndFurious
     // freopen("tests.txt", "r", stdin);
     // freopen("output.txt", "w", stdout);
     int tests = 1;

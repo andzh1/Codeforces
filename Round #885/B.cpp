@@ -3,7 +3,6 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
@@ -12,7 +11,7 @@ using namespace std;
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
 #define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
+#define foreach(v) for (const auto& x : v)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -128,8 +127,30 @@ using two_int_t = MyPoint<int, int>;
 
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    get(k)
+    vector<vector<int>> colors (k, vector<int>());
+    loop(i, n) {
+        get(x)
+        colors[x-1].push_back(i);
+    }
+    int ans = n;
+    for (auto& cur: colors) {
+        vector<int> diff;
+        cur.push_back(n);
+        diff.push_back(cur[0]);
+        for (int i = 1; i < cur.size(); ++i) {
+            diff.push_back(cur[i] - cur[i - 1] - 1);
+        }
+        sort(all(diff));
+        int cur_ans = max((diff[diff.size() - 1]) / 2, diff[diff.size() - 2]);
+        ans = min(ans, cur_ans);
+    }
+    // if (ans == 0) {
+    //     cout << "0\n";
+    //     return;
+    // }
+    cout << ans << '\n';
+    
 }
 
 

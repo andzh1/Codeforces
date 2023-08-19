@@ -3,7 +3,6 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
@@ -11,9 +10,9 @@ using namespace std;
 #define jloop(n) loop(j, n)
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
-#define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
-#define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
+#define rall(v) (v.end(), v.begin())
+#define foreach(v) for (const auto& x : v)
+#define FastAndFurious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
     if (power == 0) return 1;
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -124,18 +123,72 @@ struct MyPoint: public CustomComparablePair<first_t, second_t> {
     }
 };
 
+struct SimplePair {
+    int x;
+    int y;
+
+    bool operator<(const SimplePair& other) const {
+        return x < other.x || (x == other.x && y < other.y);
+    }
+};
+
 using two_int_t = MyPoint<int, int>;
+
+struct Cond {
+    bool upperDirected = true;
+    int x;
+    int y;
+
+    bool operator<(const Cond& other) const {
+        return x < other.x || (x == other.x && y < other.y) 
+        || (x == other.x && y == other.y && upperDirected && !other.upperDirected);
+    }
+};
 
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    get(m)
+    get(k)
+    string s(n, 'a');
+    vector<Cond> conds (k);
+    for (auto& cond : conds) {
+        get(x1)
+        get(y1)
+        get(x2)
+        get(y2)
+        cond.x = x1 - 1;
+        cond.y = y1 - 1;
+        cond.upperDirected = !(x2 + y2 == x1 + y1);
+    }
+    bool success1 = true;
+    vector<int> y_directions (m - 1, -1);
+    for (auto& cond : conds) {
+        int index = ((cond.upperDirected)? cond.y : cond.y - 1);
+        if (y_directions[index] == (1 - cond.upperDirected)) {
+            success1 = false;
+            break;
+        }
+        y_directions[index] = cond.upperDirected;
+    }
+
+    bool success2 = true;
+    vector<int> x_directions (n - 1, -1);
+    for (auto& cond : conds) {
+        int index = cond.x;
+        if (x_directions[index] == (1 - cond.upperDirected)) {
+            success2 = false;
+            break;
+        }
+        x_directions[index] = cond.upperDirected;
+    }
+
+    cout << ((success1 || success2)? "Yes\n": "No\n");
 }
 
 
 signed main() {
-    fast_and_furious
-    // freopen("tests.txt", "r", stdin);
+    FastAndFurious
+    freopen("tests.txt", "r", stdin);
     // freopen("output.txt", "w", stdout);
     int tests = 1;
     cin >> tests;

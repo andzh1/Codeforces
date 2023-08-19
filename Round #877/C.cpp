@@ -3,7 +3,6 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
@@ -11,8 +10,8 @@ using namespace std;
 #define jloop(n) loop(j, n)
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
-#define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
+#define rall(v) (v.end(), v.begin())
+#define foreach(v) for (const auto& x : v)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -126,10 +125,62 @@ struct MyPoint: public CustomComparablePair<first_t, second_t> {
 
 using two_int_t = MyPoint<int, int>;
 
+int count_perms(vector<int>& p) {
+    set<int> cur;
+    if (p[0] != 1) {
+        reverse(all(p));
+    }
+    int ans = 0;
+    for (int i = 0; i < p.size(); ++i) {
+        cur.insert(p[i]);
+        if(*(--cur.end()) == i + 1) {
+            ans++;
+        }
+    }
+    return ans;
+}
+
+bool IsPrime(int n) {
+    if (n == 2) return true;
+    if (n == 3) return true;
+    if (n == 5) return true;
+    for (int i = 2; i < sqrt(n) + 2 && i < n; ++i) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    get(m)
+    if (!IsPrime(n)) {
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                cout << i + n * j << ' ';
+            }
+            cout << '\n';
+        }
+        return;
+    }
+    if (!IsPrime(m)) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 1; j <= m; ++j) {
+                cout << j + m * i << ' ';
+            }
+            cout << '\n';
+        }
+        return;
+    }
+
+    int shift = n - 1;
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 0; j < m - 1; ++j) {
+            cout << j * shift + i << ' ';
+        }
+            cout << '\n';
+    }
+    return;
+
 }
 
 
@@ -141,4 +192,3 @@ signed main() {
     cin >> tests;
     while(tests --> 0) solve_test_case();
 }
-

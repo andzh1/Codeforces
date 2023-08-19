@@ -11,7 +11,7 @@ using namespace std;
 #define jloop(n) loop(j, n)
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
-#define rall(v) v.end(), v.begin()
+#define rall(v) v.rbegin(), v.rend()
 #define foreach(val, container) for (const auto& val : container)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
@@ -128,8 +128,26 @@ using two_int_t = MyPoint<int, int>;
 
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    vector<vector<int>> input (n);
+    vi minimals(n);
+    vi max_minimal (n);
+    int ans = 0;
+    repeat(n) {
+        get(m)
+        input[i] = read(m);
+        sort(all(input[i]));
+        minimals[i] = input[i][0];
+        max_minimal[i] = input[i][1];
+        ans += max_minimal[i];
+    }
+
+    int index = 0;
+    for (int i = 1; i < n; ++i) {
+        if (max_minimal[index] > max_minimal[i]) index = i;
+    }
+    ans -= max_minimal[index];
+    ans += *std::min_element(all(minimals));
+    cout << ans << '\n';
 }
 
 

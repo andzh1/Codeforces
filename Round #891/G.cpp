@@ -3,7 +3,6 @@
 using namespace std;
 
 #define int int64_t
-#define vi vector<int>
 #define get(a) int a; cin >> a;
 #define repeat(n) for(int i = 0; i < n; ++i)
 #define loop(j, n) for(int j = 0; j < n; ++j)
@@ -12,7 +11,7 @@ using namespace std;
 #define kloop(n) loop(j, n)
 #define all(v) v.begin(), v.end()
 #define rall(v) v.end(), v.begin()
-#define foreach(val, container) for (const auto& val : container)
+#define foreach(v) for (const auto& x : v)
 #define fast_and_furious std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
 
 int modpow(const int& x, const int& power, const int& mod) {
@@ -60,13 +59,13 @@ void print(const vector<vector<T>>& v) {
 }
 
 
-template <typename TContainer>
-void sort(TContainer& v) {
+template <typename T>
+void sort_v(vector<T>& v) {
   sort(all(v));
 }
 
-template <typename TContainer>
-void rsort_v(TContainer& v) {
+template <typename T>
+void rsort_v(vector<T>& v) {
   sort(rall(v));
 }
 
@@ -126,10 +125,105 @@ struct MyPoint: public CustomComparablePair<first_t, second_t> {
 
 using two_int_t = MyPoint<int, int>;
 
+vector<int> getPrefixSums(const vector<int>& ar) {
+    if (ar.size() == 0) return vector<int>();
+    vector<int> ans (ar.size(), ar[0]);
+    for (int i = 1; i < ar.size(); ++i) {
+        ans[i] = ans[i - 1] + ar[i];
+    }
+    return ans;
+}
+
+vector<int> getSuffixSums(const vector<int>& ar) {
+    auto copy = ar;
+    reverse(all(copy));
+    auto ans = getPrefixSums(copy);
+    reverse(all(ans));
+    return ans;
+}
+
+struct Number {
+    int index;
+    int value;
+
+    Number() = default;
+
+    bool operator<(const Number& other) const {
+        if (value != other.value) return value < other.value;
+        return index < other.index;
+    }
+};
+
+
+struct Edge {
+    int start;
+    int end;
+    int weight;
+};
+
+struct Component {
+    // vector<
+};
+
+const int MODULO = 998244353;
+
+void dfs(int start, vector<set<Edge>>& graph, vector<bool>& visited, int maxAcceptableWeight, int& ans) {
+    if (visited[start]) return;
+    visited[start] = true;
+    vector<Edge> toErase;
+    for (auto& e: graph[start]) {
+        if (e.weight > maxAcceptableWeight) {
+            toErase.push_back(e);
+        } 
+    }
+    for (auto& e: toErase) {
+        graph[start].erase(e);
+    }
+    for (auto& e: graph[start]) {
+        if (!visited[e.end]) {
+            ans = max(ans, e.weight);
+            dfs(e.end, graph, visited, maxAcceptableWeight, ans);
+        } 
+    }
+}
+
 void solve_test_case() {
     get(n)
-    auto v = read<string>(n, 1);
-    print<string>(v);
+    get(maxWeight)
+
+    map<int, vector<Edge>> edges; // weight -> edge of such a weight
+    map<int, map<int, int>> graph; // weight -> edge of such a weight
+    set<int> weights;
+    repeat(n - 1) {
+        Edge e;
+        cin >> e.start >> e.end >> e.weight;
+        weights.insert(e.weight);
+        edges[e.weight].push_back(e);
+    }
+
+    int freeEdges = (n - 2) * (n-1) / 2;
+    int prevMax = maxWeight;
+    int ans = 0;
+    while (!weights.empty()) {
+        int curmax = *(--weights.end());
+        weights.erase(curmax);
+
+        ans += (prevMax - maxWeight) * modpow(2, freeEdges, MODULO);
+        ans %= MODULO;
+
+        const vector<Edge>& curEdges = edges[curmax];
+        set<int> nonAvaliableVertices;
+        for (const Edge& e : curEdges) {
+            nonAvaliableVertices.insert(e.start);
+            nonAvaliableVertices.insert(e.end);
+        }
+
+        int k = nonAvaliableVertices.size();
+        // int removedEdgesCount = k * (n - k)
+    }
+
+    
+    cout << '\n';
 }
 
 
